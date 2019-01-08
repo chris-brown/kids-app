@@ -4,7 +4,9 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "test": "node node_modules/jest/bin/jest.js",
+    "test:watch": "yarn test --watch"
   },
   "dependencies": {
     "expo": "^32.0.0",
@@ -12,10 +14,14 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz"
   },
   "devDependencies": {
-    "babel-preset-expo": "^5.0.0"
+    "babel-preset-expo": "^5.0.0",
+    "jest-expo": "^32.0.0"
   },
   "private": true,
-  "jshintConfig" : {
-    "esversion" : "6"
+  "jshintConfig": {
+    "esversion": "6"
+  },
+  "jest": {
+    "preset": "jest-expo"
   }
 }
