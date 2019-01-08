@@ -18,8 +18,8 @@
     "jest-expo": "^32.0.0"
   },
   "private": true,
-  "jshintConfig": {
-    "esversion": "6"
+  "jshintConfig" : {
+    "esversion" : 6
   },
   "jest": {
     "preset": "jest-expo"
