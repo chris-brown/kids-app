@@ -6,5 +6,5 @@ describe('1 + 1', () => {
 
     it('should equal 2', () => {
         expect(result).toBe(2);
-    })
-})
+    });
+});
