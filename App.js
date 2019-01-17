@@ -18,11 +18,17 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
 
-    //this.state = { question: {}, answer: '?', maxNumber: 10 };
     this.state = {
       ...this._init(),
-      maxNumber: 10
+      maxNumber: 10,
+      timer: null,
+      score: 0,
+      started: false,
     };
+  }
+
+  componentWillUnmount() {
+    this._stop();
   }
 
   _init = () => {
@@ -33,16 +39,42 @@ export default class App extends React.Component {
       result: addition(a, b),
       answer: '?'
     };
-  }
+  };
+
+  _tick = () => {
+    if (this.state.score <= 0) {
+      Alert.alert('You loose', 'Try again?',
+        [
+          {text: 'OK', onPress: this._stop }
+        ]);
+      this._stop();
+      return;
+    }
+    this.setState(state => ({
+      ...this._init(),
+      score: state.score - 1,
+      timer: setTimeout(this._tick, 5000)
+    }));
+  };
 
   _onSelect = answer => {
     if (answer === this.state.result) {
-      this.setState(this._init());
+      clearTimeout(this.state.timer);
+      this.setState(state => ({
+        ...this._init(),
+        score: state.score + 1,
+        timer: setTimeout(this._tick, 5000),
+        started: true,
+      }));
     }
     else {
       this.setState({ answer });
     }
-  }
+  };
+
+  _stop = () => {
+    clearTimeout(this.state.timer);
+  };
 
   render() {
     const { question, answer, maxNumber } = this.state;
@@ -55,10 +87,14 @@ export default class App extends React.Component {
                 <NumberButton number={(number+1)} key={number} onClick={this._onSelect} />
               )
             }
+            <View style={styles.button}>
+              <Button color="red" onPress={this._stop} title="Stop" />
+            </View>
           </View>
         </View>
-        <View style={{ ...styles.row, flex: 1, backgroundColor: 'skyblue' }}>
-          <Text style={{ fontSize: 20 }}>{ `${question.a} + ${question.b} = ${answer}` }</Text>
+        <View style={{ ...styles.row, flex: 1, backgroundColor: answer === '?' ? 'skyblue' : 'red' }}>
+          <Text style={{ fontSize: 38 }}>{ `${question.a} + ${question.b} = ${answer}` }</Text>
+          <Text style={{  }}>Score: { this.state.score }</Text>
         </View>
       </View>
     );
@@ -73,16 +109,17 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   row: {
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
   },
   buttonWrapper: {
     flexWrap: 'wrap',
     flexDirection: 'row',
+    justifyContent: "space-between",
   },
   button: {
-    width: 50,
+    width: 70,
     height: 50,
     color: 'white',
     margin: 5,
